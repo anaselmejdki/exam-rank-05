@@ -3,40 +3,41 @@
 #include <iostream>
 #include <string>
 
+
 class bigint {
     private:
         std::string digits;
     public:
-        //Constructors
+        //constructors
         bigint();
         bigint(unsigned int n);
         bigint(const bigint& other);
-        //arithmetic
+        bigint& operator=(const bigint& other);
+        //Arithmetci
         bigint operator+(const bigint& other) const;
         bigint operator-(const bigint& other) const;
         bigint& operator+=(const bigint& other);
         //Increment
         bigint& operator++();
         bigint operator++(int);
-        //digit shift
+        //shifting
         bigint operator<<(unsigned int n) const;
         bigint& operator<<=(unsigned int n);
         bigint operator>>(unsigned int n) const;
         bigint& operator>>=(unsigned int n);
-        //Comparison
+        //comparison
         bool operator==(const bigint& other) const;
         bool operator!=(const bigint& other) const;
         bool operator<(const bigint& other) const;
         bool operator<=(const bigint& other) const;
         bool operator>(const bigint& other) const;
         bool operator>=(const bigint& other) const;
-        
         //overloading
         bigint operator<<(const bigint& other) const;
         bigint& operator<<=(const bigint& other);
         bigint operator>>(const bigint& other) const;
         bigint& operator>>=(const bigint& other);
-        
+        //functions
         friend std::ostream& operator<<(std::ostream& os, const bigint& other);
         friend unsigned int to_uint(const bigint& other);
 };

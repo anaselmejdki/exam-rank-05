@@ -7,9 +7,9 @@ bigint::bigint(unsigned int n)
     if (n == 0)
     {
         digits = "0";
-        return;
+        return ;
     }
-    while (n > 0)
+    while(n > 0)
     {
         digits += static_cast<char>('0' + (n % 10));
         n /= 10;
@@ -17,6 +17,13 @@ bigint::bigint(unsigned int n)
 }
 
 bigint::bigint(const bigint& other) : digits(other.digits) {}
+
+bigint& bigint::operator=(const bigint& other)
+{
+    if (*this != other)
+        this->digits = other.digits;
+    return *this;
+}
 
 bigint bigint::operator+(const bigint& other) const
 {
@@ -27,9 +34,9 @@ bigint bigint::operator+(const bigint& other) const
 
     while (i < digits.size() || i < other.digits.size() || carry)
     {
-        int digit1 = (i < digits.size()) ? digits[i] - '0' : 0;
-        int digit2 = (i < other.digits.size()) ? other.digits[i] - '0' : 0;
-        int sum = digit1 + digit2 + carry;
+        int dig1 = (i < digits.size()) ? digits[i] - '0' : 0;
+        int dig2 = (i < other.digits.size()) ? other.digits[i] - '0' : 0;
+        int sum = dig1 + dig2 + carry;
         result.digits += (sum % 10) + '0';
         carry = sum / 10;
         i++;
@@ -95,14 +102,14 @@ bigint& bigint::operator>>=(unsigned int n)
     return *this;
 }
 
-bool bigint::operator==(const bigint& other) const { return (this->digits == other.digits); }
+bool bigint::operator==(const bigint& other) const { return digits == other.digits; }
 
-bool bigint::operator!=(const bigint& other) const { return !(this->digits == other.digits); }
+bool bigint::operator!=(const bigint& other) const { return !(*this == other); }
 
 bool bigint::operator<(const bigint& other) const
 {
-    if (this->digits.size() != other.digits.size())
-        return (this->digits.size() < other.digits.size());
+    if (digits.size() != other.digits.size())
+        return (digits.size() < other.digits.size());
     for (int i = digits.size() - 1; i >= 0; --i)
     {
         if (digits[i] != other.digits[i])
@@ -127,7 +134,7 @@ bigint& bigint::operator>>=(const bigint& other) { return (*this >>= to_uint(oth
 
 std::ostream& operator<<(std::ostream& os, const bigint& other)
 {
-    for (int i = other.digits.length() - 1; i >= 0; --i)
+    for (int i = other.digits.size() - 1; i >= 0; --i)
         os << other.digits[i];
     return os;
 }
