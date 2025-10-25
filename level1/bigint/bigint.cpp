@@ -1,9 +1,10 @@
 #include "bigint.hpp"
 
-bigint::bigint() : digits("0") {}
+bigint::bigint() : digits("0"), negative(false) {}
 
-bigint::bigint(unsigned int n)
+bigint::bigint(unsigned int n) : negative(false)
 {
+    digits.clear();
     if (n == 0)
     {
         digits = "0";
@@ -16,17 +17,38 @@ bigint::bigint(unsigned int n)
     }
 }
 
+bigint::bigint(int n)
+{
+    if (n < 0)
+    {
+        negative = true;
+        n = -n;
+    }
+    else
+        negative = false;
+    while (n > 0)
+    {
+        digits += static_cast<char>('0' + (n % 10));
+        n /= 10;
+    }
+}
+
 bigint::bigint(const bigint& other) : digits(other.digits) {}
 
 bigint& bigint::operator=(const bigint& other)
 {
     if (this != &other)
+    {
         this->digits = other.digits;
+        negative = other.negative;
+    }
     return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const bigint& other)
 {
+    if (other.negative && !(other.digits.size() == 0 && other.digits[0] == '0'))
+        os << '-';
     for (int i = other.digits.length() - 1; i >=0; --i)
         os << other.digits[i];
     return os;
@@ -115,24 +137,35 @@ bool bigint::operator!=(const bigint& other) const
 
 bool bigint::operator<(const bigint& other) const
 {
+    if (negative != other.negative)
+        return negative;
+    
+    bool result;
     if (this->digits.size() != other.digits.size())
-        return this->digits.size() < other.digits.size();
-    for (int i = digits.size() - 1; i >= 0; --i)
+        result = this->digits.size() < other.digits.size();
+    else
     {
-        if (digits[i] != other.digits[i])
-            return digits[i] < other.digits[i];
+        result = false;
+        for (int i = digits.size() - 1; i >= 0; --i)
+        {
+            if (digits[i] != other.digits[i])
+            {
+                result = digits[i] < other.digits[i];
+                break;
+            }
+        }
     }
-    return false;
+    return negative ? !result && *this != other : result;
 }
 
 bool bigint::operator<=(const bigint& other) const
 {
-    return !(*this > other);
+    return (*this < other || *this == other);
 }
 
 bool bigint::operator>(const bigint& other) const
 {
-    return other < *this;
+    return !(*this <= other);
 }
 
 bool bigint::operator>=(const bigint& other) const

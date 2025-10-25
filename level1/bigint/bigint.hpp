@@ -6,9 +6,11 @@
 class bigint {
     private:
         std::string digits;
+        bool negative;
     public:
         bigint();
         bigint(unsigned int n);
+        bigint(int n);
         bigint(const bigint& other);
         bigint& operator=(const bigint& other);
 

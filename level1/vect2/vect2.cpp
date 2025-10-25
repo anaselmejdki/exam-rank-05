@@ -8,12 +8,46 @@ vect2::vect2(const vect2& other) : x(other.x), y(other.y) {}
 
 vect2& vect2::operator=(const vect2& other)
 {
-    if (*this != other)
+    if (this != &other)
     {
         x = other.x;
         y = other.y;
     }
     return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const vect2& other)
+{
+    os << "{" << other.x << ", " << other.y << "}";
+    return os;
+}
+
+vect2& vect2::operator++()
+{
+    ++x;
+    ++y;
+    return *this;
+}
+
+vect2 vect2::operator++(int)
+{
+    vect2 res(*this);
+    ++(*this);
+    return res;
+}
+
+vect2& vect2::operator--()
+{
+    --x;
+    --y;
+    return *this;
+}
+
+vect2 vect2::operator--(int)
+{
+    vect2 rs(*this);
+    --(*this);
+    return rs;
 }
 
 vect2 vect2::operator+(const vect2& other) const
@@ -48,8 +82,23 @@ vect2 vect2::operator*(int scalar) const
 vect2& vect2::operator*=(int scalar)
 {
     x = x * scalar;
-    y =  y * scalar;
+    y = y * scalar;
     return *this;
+}
+
+vect2 vect2::operator-() const
+{
+    return vect2(-x, -y);
+}
+
+int& vect2::operator[](int index)
+{
+    return (index == 0) ? x : y;
+}
+
+const int& vect2::operator[](int index) const
+{
+    return (index == 0) ? x : y;
 }
 
 bool vect2::operator==(const vect2& other) const
@@ -59,50 +108,7 @@ bool vect2::operator==(const vect2& other) const
 
 bool vect2::operator!=(const vect2& other) const
 {
-    return !(*this == other);
-}
-
-vect2& vect2::operator++()
-{
-    ++x;
-    ++y;
-    return *this;
-}
-
-vect2 vect2::operator++(int)
-{
-    vect2 res(*this);
-    ++(*this);
-    return res;
-}
-
-vect2& vect2::operator--()
-{
-    --x;
-    --y;
-    return *this;
-}
-
-vect2 vect2::operator--(int)
-{
-    vect2 res(*this);
-    --(*this);
-    return res;
-}
-
-vect2 vect2::operator-() const
-{
-    return vect2(-x, -y);
-}
-
-int& vect2::operator[](int scalar)
-{
-    return (scalar == 0) ? x : y;
-}
-
-const int& vect2::operator[](int scalar) const
-{
-    return (scalar == 0) ? x : y;
+    return !(x == other.x && y == other.y);
 }
 
 vect2 operator*(int scalar, const vect2& other)
@@ -110,8 +116,3 @@ vect2 operator*(int scalar, const vect2& other)
     return vect2(scalar * other.x, scalar * other.y);
 }
 
-std::ostream& operator<<(std::ostream& os, const vect2& other)
-{
-    os << "{" << other.x << ", " << other.y << "}";
-    return os;
-}
