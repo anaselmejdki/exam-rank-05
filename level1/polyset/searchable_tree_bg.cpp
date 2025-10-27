@@ -7,9 +7,7 @@ searchable_tree_bag::searchable_tree_bag(const searchable_tree_bag& other) : tre
 searchable_tree_bag& searchable_tree_bag::operator=(const searchable_tree_bag& other)
 {
     if (this != &other)
-    {
         tree_bag::operator=(other);
-    }
     return *this;
 }
 
@@ -17,17 +15,15 @@ searchable_tree_bag::~searchable_tree_bag() {}
 
 bool searchable_tree_bag::has(int value) const
 {
-    return search_node(tree, value);
-}
-
-bool searchable_tree_bag::search_node(const node* current, int value) const
-{
-    if (current == nullptr)
-        return false;
-    if (current->value == value)
-        return true;
-    if (value < current->value)
-        return search_node(current->l, value);
-    else
-        return search_node(current->r, value);
+    node *current = tree;
+    while (current != nullptr)
+    {
+        if (value == current->value)
+            return true;
+        else if (value < current->value)
+            current = current->l;
+        else
+            current = current->r;
+    }
+    return false;
 }

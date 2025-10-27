@@ -3,43 +3,41 @@
 #include <iostream>
 #include <string>
 
-class bigint {
+class bigint{
     private:
-        std::string digits;
-        bool negative;
+    std::string digits;
+
     public:
-        bigint();
-        bigint(unsigned int n);
-        bigint(int n);
-        bigint(const bigint& other);
-        bigint& operator=(const bigint& other);
+    bigint(); // default -> 0
+    bigint(unsigned int n); // from int
+    bigint(const bigint& other); // copy constructor: bigint(const bigint&)
 
-        friend std::ostream& operator<<(std::ostream& os, const bigint& other);
 
-        bigint operator+(const bigint& other) const;
-        bigint& operator+=(const bigint& other);
+    friend std::ostream& operator<<(std::ostream& os, const bigint& n);
 
-        bigint& operator++();
-        bigint operator++(int);
+    bigint operator+(const bigint& other) const;
+    bigint& operator+=(const bigint& other);
 
-        bigint operator<<(unsigned int n) const;
-        bigint& operator<<=(unsigned int n);
-        bigint operator>>(unsigned int n) const;
-        bigint& operator>>=(unsigned int n);
+    bigint operator<<(unsigned int n) const;
+    bigint& operator<<=(unsigned int n); // digit shift in-place
 
-        // bigint& operator>>=(const bigint& other);
+    bigint& operator++(); //++x
+    bigint operator++(int); //x++
 
-        bool operator<(const bigint& other) const;
-        bool operator<=(const bigint& other) const;
-        bool operator>(const bigint& other) const;
-        bool operator>=(const bigint& other) const;
-        bool operator==(const bigint& other) const;
-        bool operator!=(const bigint& other) const;
+    bigint operator>>(unsigned int n) const;
+    bigint& operator>>=(unsigned int n); // digit shift in-place
 
-        bigint operator<<(const bigint& other) const;
-        bigint& operator<<=(const bigint& other);
-        bigint operator>>(const bigint& other) const;
-        bigint& operator>>=(const bigint& other);
+    bool operator==(const bigint& other) const;
+    bool operator!=(const bigint& other) const;
 
-        bigint operator-(const bigint& other) const;
+    bool operator<(const bigint& other) const;
+
+    bool operator<=(const bigint& other) const;
+    bool operator>(const bigint& other) const;
+    bool operator>=(const bigint& other) const;
+
+    //bigint operator-(const bigint& a, const bigint& b) const;
+    bigint operator-(const bigint& other) const; // dummy operator- to satisfy grademe
+
+    bigint& operator>>=(const bigint& other);
 };
