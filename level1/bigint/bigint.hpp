@@ -1,35 +1,41 @@
-#include <algorithm> // Required for std::reverse
+#pragma once
+
 #include <iostream>
 #include <string>
 
-class bigint
-{
-  private:
-    std::string digits;
+class bigint {
+    private:
+        std::string digits;
+    public:
+        bigint();
+        bigint(const bigint& other);
+        bigint(unsigned long n);
+        bigint& operator=(const bigint& other);
 
-  public:
-    bigint();                               // default constructor.
-    bigint(unsigned long n);                // constructor with params.
-    bigint(const bigint &other);            // copy constructor
-    bigint &operator=(const bigint &other); // copy  assignement operat
+        bigint operator+(const bigint& other) const;
+        bigint operator-(const bigint& other) const;
+        bigint& operator+=(const bigint& other);
 
+        bigint& operator++();
+        bigint operator++(int);
 
-    bigint operator+(const bigint &other) const;
-    bigint &operator+=(const bigint &other);
-    bigint operator++(int);
-    bigint &operator++();
-    bigint operator<<(unsigned int shift) const;
-    const std::string &getDigits() const;
-    friend std::ostream& operator<<(std::ostream& os, const bigint& b);
+        bigint operator<<(unsigned long n) const;
+        bigint& operator<<=(unsigned long n);
+        bigint operator>>(unsigned long n) const;
+        bigint& operator>>=(unsigned long n);
 
-    bigint& operator<<=(unsigned long n);
-    bigint& operator>>=(unsigned long n);
-    bigint& operator>>=(const bigint& other);
+        bigint operator<<(const bigint& other) const;
+        bigint& operator<<=(const bigint& other);
+        bigint operator>>(const bigint& other) const;
+        bigint& operator>>=(const bigint& other);
 
-    bool operator==(const bigint& other) const;
-    bool operator!=(const bigint& other) const;
-    bool operator<(const bigint& other) const;
-    bool operator<=(const bigint& other) const;
-    bool operator>(const bigint& other) const;
-    bool operator>=(const bigint& other) const;
+        bool operator==(const bigint& other) const;
+        bool operator!=(const bigint& other) const;
+        bool operator<(const bigint& other) const;
+        bool operator<=(const bigint& other) const;
+        bool operator>(const bigint& other) const;
+        bool operator>=(const bigint& other) const;
+
+        friend std::ostream& operator<<(std::ostream& os, const bigint& other);
+        friend unsigned long to_uint(const bigint& other);
 };

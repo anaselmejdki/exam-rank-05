@@ -4,12 +4,12 @@
 
 class set {
     private:
-        searchable_bag& bag_ref;
+        searchable_bag& bag;
     public:
-        set(searchable_bag& b);
-        
+        set(searchable_bag& bag);
+
         void insert(int value);
-        void insert(int *ptr, int value);
+        void insert(int *value, int count);
         void print() const;
         void clear();
         bool has(int value) const;

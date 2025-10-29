@@ -1,128 +1,57 @@
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <stdbool.h>
 
-#define MAX_SETUP 1024
-
-typedef struct
-{
-    int *map1;
-    int *map2;
-    int iterator;
-    int width;
-    int height;
-    char *setup;
-} Life ;
-
-void init_map(Life *life)
-{
-    int i = 0;
-    int x = 0;
-    int y  = 0;
-    int draw = 0;
-
-    while (life->setup[i])
-    {
-        switch (life->setup[i])
-        {
-            case 'w': y--; break;
-            case 's': y++; break;
-            case 'a': x--; break;
-            case 'd': x++; break;
-            case 'x': draw = !draw; break;
-            default: break;
-        }
-        if (draw && x >= 0 && x < life->width && y >= 0 && y < life->height)
-            life->map1[y * life->width + x] = 1;
-        i++;
-    }
-}
-
-void init_life(Life *life, char *setup, char **argv)
-{
-    life->width = atoi(argv[1]);
-    life->height = atoi(argv[2]);
-    life->iterator = atof(argv[3]);
-    if (life->width <= 0 || life->height <= 0 || life->iterator < 0)
-        exit(1);
-    life->setup = setup;
-    life->map1 = calloc(life->width * life->height, sizeof(int));
-    life->map2 = calloc(life->width * life->height, sizeof(int));
-    init_map(life);
-}
-
-void free_map(Life *life)
-{
-    free(life->map1);
-    free(life->map2);
-    free(life);
-}
-
-void print_map(Life *life)
-{
-    for (int y = 0; y < life->height; y++)
-    {
-        for (int x = 0; x < life->width; x++)
-        {
-            int cell = life->map1[y * life->width + x];
-            putchar(cell ? '0': ' ');
-        }
-        putchar('\n');
-    }
-}
-
-
-void check_boundaries_count(Life *life, int x, int y, int *count)
-{
-    if (x >= 0 && x < life->width && y >= 0 && y < life->height)
-        if (life->map1[y * life->width + x])
-            (*count)++;
-}
-
-int count_neighbors(Life *life, int x, int y)
-{
-    int count = 0;
-    for (int ny = y - 1; ny <= y + 1; ny++)
-        for (int nx = x - 1; nx <= x + 1; nx++)
-            if (!(ny == y && nx == x))
-                check_boundaries_count(life, nx, y, &count);
-    return count;
-}
-
-void grow_life(Life *life)
-{
-    for (int i = 0; i < life->iterator; i++)
-    {
-        for (int y = 0; y < life->height; y++)
-        {
-            for (int x = 0; x < life->width; x++)
-            {
-                int neighbors = count_neighbors(life, x, y);
-                int alive = life->map1[y * life->width + x];
-                life->map2[y * life->width + x] = (alive && (neighbors == 2 || neighbors == 3))
-                || (!alive && neighbors == 3);
-            }
-        }
-        int *temp = life->map1;
-        life->map1 = life->map2;
-        life->map2 = temp;
-    }
-}
-
-int main(int ac, char **av)
+int main(int ac , char **av)
 {
     if (ac != 4)
         return 1;
-    
-    char setup[MAX_SETUP];
-    int b_s = read(0, setup, MAX_SETUP - 1);
-    if (b_s <= 0) return 1;
-    setup[b_s] = '\0';
+    int w = atoi(av[1]), h = atoi(av[2]), iter = atoi(av[3]), x = 0, y = 0;
+    if (w <= 0 || h <= 0 || iter < 0)
+        return 1;
+    int board [h][w], next[h][w];
+    bool pen = false;
+    char c;
 
-    Life *life = calloc(1, sizeof(Life));
-    init_life(life, setup, av);
-    grow_life(life);
-    print_map(life);
-    free_map(life);
-    return (0);
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+            board[i][j] = 0;
+    }
+
+    while (read(0, &c, 1) == 1)
+    {
+        if (c == 'w' && x > 0) x--;
+        else if (c == 's' && x < h - 1) x++;
+        else if (c == 'd' && y < w - 1) y++;
+        else if (c == 'a' && y > 0) y--;
+        else if (c == 'x') pen = !pen;
+        if (pen) board[x][y] = 1;
+    }
+
+    for (int it = 0; it < iter; it++)
+    {
+        for (int i = 0; i < h; i++)
+        {
+            for (int j = 0; j < w; j++)
+            {
+                int n = 0;
+                for (int xi = -1; xi <= 1; xi++)
+                    for (int xj = -1; xj <= 1; xj++)
+                        if ((xj || xi) && (i + xi >= 0 && i + xi < h && j + xj >= 0 && j + xj < w))
+                            n += board[i + xi][j + xj];
+                next[i][j] = ((board[i][j] && (n == 2 || n == 3))) || ((!board[i][j]) && (n == 3));
+            }
+        }
+        for (int i = 0; i < h; i++)
+            for (int j = 0; j < w; j++)
+                board[i][j] = next[i][j];
+    }
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+            board[i][j] ? putchar('0') : putchar(' ');
+        putchar('\n');
+    }
 }

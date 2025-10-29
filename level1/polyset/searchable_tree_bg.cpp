@@ -8,6 +8,7 @@ searchable_tree_bag& searchable_tree_bag::operator=(const searchable_tree_bag& o
 {
     if (this != &other)
         tree_bag::operator=(other);
+    
     return *this;
 }
 
@@ -15,15 +16,16 @@ searchable_tree_bag::~searchable_tree_bag() {}
 
 bool searchable_tree_bag::has(int value) const
 {
-    node *current = tree;
-    while (current != nullptr)
+    node *corrent = tree;
+
+    while (corrent != nullptr)
     {
-        if (value == current->value)
+        if (corrent->value == value)
             return true;
-        else if (value < current->value)
-            current = current->l;
+        else if (value < corrent->value)
+            corrent = corrent->l;
         else
-            current = current->r;
+            corrent = corrent->r;
     }
     return false;
 }

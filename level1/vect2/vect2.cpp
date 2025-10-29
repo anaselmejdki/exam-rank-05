@@ -1,133 +1,117 @@
 #include "vect2.hpp"
 
-vect2::vect2(): x(0), y(0) {}
+vect2::vect2() : x(0), y(0) {}
 
 vect2::vect2(int x, int y) : x(x), y(y) {}
 
-vect2::vect2(const vect2& other) : x(other.x), y(other.y){}
+vect2::vect2(const vect2& other) : x(other.x), y(other.y) {}
 
-// Assignment operator
-vect2& vect2::operator=(const vect2& other)throw() {
-    if (this != &other){
-        x = other.x;
-        y = other.y;
-    }
-    return *this;
+vect2& vect2::operator=(const vect2& other)
+{
+	if (this != &other)
+	{
+		x = other.x;
+		y = other.y;
+	}
+	return *this;
 }
 
-// Output operator
-std::ostream& operator<<(std::ostream& os, const vect2& v) {
-	os << "{" << v.x << ", " << v.y << "}";
+std::ostream& operator<<(std::ostream& os, const vect2& other)
+{
+	os << "{" << other.x << ", " << other.y << "}";
 	return os;
 }
 
-// Addition
-vect2 vect2::operator+(const vect2& other) const {
-	return vect2(x + other.x, y + other.y);
-}
-
-vect2& vect2::operator+=(const vect2& other) {
-	x += other.x;
-	y += other.y;
-	return *this;
-}
-
-// Subtraction
-vect2 vect2::operator-(const vect2& other) const {
-	return vect2(x - other.x, y - other.y);
-}
-
-vect2& vect2::operator-=(const vect2& other) {
-	x -= other.x;
-	y -= other.y;
-	return *this;
-}
-
-// Equality
-bool vect2::operator==(const vect2& other) const {
-	return x == other.x && y == other.y;
-}
-
-bool vect2::operator!=(const vect2& other) const {
-	return !(*this == other);
-}
-
-// Prefix increment (++v)
-vect2& vect2::operator++() {
+vect2& vect2::operator++()
+{
 	++x;
 	++y;
 	return *this;
 }
 
-// Postfix increment (v++)
-vect2 vect2::operator++(int) {
-	vect2 temp(*this);
+vect2 vect2::operator++(int)
+{
+	vect2 res = *this;
 	++(*this);
-	return temp;
+	return res;
 }
 
-// Prefix decrement (--v)
-vect2& vect2::operator--() {
+vect2& vect2::operator--()
+{
 	--x;
 	--y;
 	return *this;
 }
 
-// Postfix decrement (v--)
-vect2 vect2::operator--(int) {
-	vect2 temp(*this);
+vect2 vect2::operator--(int)
+{
+	vect2 res = *this;
 	--(*this);
-	return temp;
+	return res;
 }
 
-vect2 operator*(int scalar, const vect2& v) {
-	return vect2(v.getX() * scalar, v.getY() * scalar);
+vect2 vect2::operator+(const vect2& other) const
+{
+	return vect2(x + other.x, y + other.y);
 }
 
-int vect2::getX() const throw() {
-	return x;
+vect2& vect2::operator+=(const vect2& other)
+{
+	x += other.x;
+	y += other.y;
+	return *this;
 }
 
-int vect2::getY() const throw() {
-	return y;
+vect2 vect2::operator-(const vect2& other) const
+{
+	return vect2(x - other.x, y - other.y);
 }
 
-// void vect2::setX(int newX) throw() {
-// 	x = newX;
-// }
+vect2& vect2::operator-=(const vect2& other)
+{
+	x -= other.x;
+	y -= other.y;
+	return *this;
+}
 
-// void vect2::setY(int newY) throw() {
-// 	y = newY;
-// }
-
-
-// * operator
-vect2 vect2::operator*(int scalar) const{
+vect2 vect2::operator*(int scalar) const
+{
 	return vect2(x * scalar, y * scalar);
 }
 
-vect2& vect2::operator*=(int scalar){
+vect2& vect2::operator*=(int scalar)
+{
 	x *= scalar;
 	y *= scalar;
 	return *this;
 }
 
-// Array access operator
-int& vect2::operator[](int index) {
-	if (index == 0)
-		return x;
-	else
-		return y;  // index == 1
-}
-
-const int& vect2::operator[](int index) const {
-	if (index == 0)
-		return x;
-	else
-		return y;  // index == 1
-}
-
-// Unary minus operator
-vect2 vect2::operator-() const {
+vect2 vect2::operator-() const
+{
 	return vect2(-x, -y);
+}
+
+const int& vect2::operator[](int index) const
+{
+	return (index == 0) ? x: y;
+}
+
+int& vect2::operator[](int index)
+{
+	return (index == 0) ? x: y;
+}
+
+bool vect2::operator==(const vect2& other) const
+{
+	return (this->x == other.x && this->y == other.y);
+}
+
+bool vect2::operator!=(const vect2& other) const
+{
+	return (!(this->x == other.x && this->y == other.y));
+}
+
+vect2 operator*(int scalar, const vect2& other)
+{
+	return vect2(scalar * other.x, scalar * other.y);
 }
