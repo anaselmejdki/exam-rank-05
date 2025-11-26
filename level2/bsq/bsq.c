@@ -1,19 +1,17 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define MAX_X 1000
 #define MAX_Y 1000
+#define MAX_X 1000
 
-enum cell_state { EMPTy = 0, OBSTACLE = 1, FULL = 2 };
+enum cell_state { EMPTY = 0, OBSTACLE = 1, FULL = 2};
 
-typedef struct
-{
+typedef struct {
     int x, y, size;
 } t_bsq;
 
-typedef struct
-{
+typedef struct {
     int x, y;
     t_bsq bsq;
     char empty, obstacle, full;
@@ -24,7 +22,7 @@ int min3(int a, int b, int c)
 {
     if (a <= b && a <= c)
         return a;
-    if ((b <= a && b <= c))
+    if (b <= a && b <= c)
         return b;
     return c;
 }
@@ -33,13 +31,11 @@ int read_map(FILE *file, t_data *data)
 {
     if (fscanf(file, "%d %c %c %c\n", &data->y, &data->empty, &data->obstacle, &data->full) != 4 || data->y < 1)
         return 0;
-    if (data->empty== data->obstacle || data->empty == data->full || data->obstacle == data->full)
+    if (data->empty == data->obstacle || data->empty == data->full || data->obstacle == data->full)
         return 0;
-    
     char *line = NULL;
     size_t len = 0;
     int y = 0, x = 0;
-
     while (y < data->y && getline(&line, &len, file) != -1)
     {
         int read_len = strlen(line);
@@ -50,7 +46,6 @@ int read_map(FILE *file, t_data *data)
             free(line);
             return 0;
         }
-
         if (y == 0)
             data->x = read_len;
         else if (read_len != data->x)
@@ -61,7 +56,7 @@ int read_map(FILE *file, t_data *data)
         for (x = 0; x < data->x; x++)
         {
             if (line[x] == data->empty)
-                data->map[y][x] = EMPTy;
+                data->map[y][x] = EMPTY;
             else if (line[x] == data->obstacle)
                 data->map[y][x] = OBSTACLE;
             else
@@ -81,7 +76,6 @@ int read_map(FILE *file, t_data *data)
 void find_bsq(t_data *data)
 {
     int dp[MAX_Y][MAX_X] = {0};
-
     for (int y = 0; y < data->y; y++)
     {
         for (int x = 0; x < data->x; x++)
@@ -91,27 +85,29 @@ void find_bsq(t_data *data)
             else if (x == 0 || y == 0)
                 dp[y][x] = 1;
             else
-                dp[y][x] = 1 + min3(dp[y - 1][x], dp[y][x - 1], dp[y - 1][x - 1]);
+                dp[y][x] = 1 + min3(dp[y-1][x], dp[y][x-1], dp[y-1][x-1]);
             if (dp[y][x] > data->bsq.size)
             {
                 data->bsq.size = dp[y][x];
-                data->bsq.x = x- dp[y][x] + 1;
+                data->bsq.x = x - dp[y][x] + 1;
                 data->bsq.y = y - dp[y][x] + 1;
             }
         }
     }
-    for (int j = 0; j < data->bsq.size; j++)
-        for (int i = 0; i < data->bsq.size; i++)
-            data->map[data->bsq.y + j][data->bsq.y +i] = FULL;
+    for (int j = 0; j < data->bsq.y; j++)
+    {
+        for (int i = 0; i < data->bsq.x; i++)
+            data->map[data->bsq.y + j][data->bsq.x + i] = FULL;
+    }
 }
 
 void print_map(t_data *data)
 {
     for (int y = 0; y < data->y; y++)
     {
-        for (int x= 0; x < data->x; x++)
+        for (int x = 0; x < data->x; x++)
         {
-            if (data->map[y][x] == EMPTy)
+            if (data->map[y][x] == EMPTY)
                 fputc(data->empty, stdout);
             else if (data->map[y][x] == OBSTACLE)
                 fputc(data->obstacle, stdout);
@@ -124,7 +120,7 @@ void print_map(t_data *data)
 
 void process_map(FILE *file)
 {
-    t_data *data = {0};
+    t_data data = {0};
     if (!read_map(file, &data))
     {
         fprintf(stderr, "map error\n");
